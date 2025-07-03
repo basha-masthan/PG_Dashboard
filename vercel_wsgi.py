@@ -1,1 +1,1 @@
-from myproject.wsgi import PG_T1  # replace with your actual project name
+from PG_T1.wsgi import application
