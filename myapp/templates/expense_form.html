@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">{{ form_title }}</h2>
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    <div>
+        <label class="block text-sm font-medium">Category</label>
+        <select name="category" class="border p-2 w-full rounded" required>
+            <option value="FOOD">Food</option>
+            <option value="FURNITURE">Furniture</option>
+            <option value="INFRASTRUCTURE">Infrastructure</option>
+            <option value="MANAGEMENT_RENT">Management Rent</option>
+            <option value="EMPLOYEE_SALARY">Employee Salary</option>
+            <option value="Electricity">Electricity</option>
+            <option value="Others">Others</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium">Amount</label>
+        <input type="number" step="0.01" name="amount" class="border p-2 w-full rounded" required>
+    </div>
+    <div>
+        <label class="block text-sm font-medium">Description</label>
+        <textarea name="description" class="border p-2 w-full rounded"></textarea>
+    </div>
+    <div>
+        <label class="block text-sm font-medium">Date</label>
+        <input type="date" name="date" class="border p-2 w-full rounded" required>
+    </div>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Submit</button>
+</form>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">Monthly Financial Report</h2>
+<a href="{% url 'add_expense' %}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block hover:bg-blue-600">Add Expense</a>
+
+<h3 class="text-lg font-semibold mb-2">Monthly Collections</h3>
+<table class="w-full border-collapse border mb-8 bg-white rounded-lg shadow">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border p-2">Month</th>
+            <th class="border p-2">Total Collected</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for collection in collections %}
+        <tr>
+            <td class="border p-2">{{ collection.month_trunc|date:"Y-m" }}</td>
+            <td class="border p-2">{{ collection.total_collected }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" class="border p-2 text-center">No collections recorded</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3 class="text-lg font-semibold mb-2">Monthly Expenses</h3>
+<table class="w-full border-collapse border bg-white rounded-lg shadow">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border p-2">Month</th>
+            <th class="border p-2">Total Expenses</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expense in expenses %}
+        <tr>
+            <td class="border p-2">{{ expense.month_trunc|date:"Y-m" }}</td>
+            <td class="border p-2">{{ expense.total_expenses }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" class="border p-2 text-center">No expenses recorded</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

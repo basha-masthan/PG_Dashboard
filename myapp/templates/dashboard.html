@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">Room and Customer List</h2>
+<div class="mb-4">
+    <a href="{% url 'add_customer' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Customer</a>
+    <form method="get" class="inline-block ml-4">
+        <label for="balance_filter" class="text-sm">Filter by Balance:</label>
+        <select name="balance_filter" id="balance_filter" class="border p-2 rounded" onchange="this.form.submit()">
+            <option value="">All</option>
+            <option value="unpaid" {% if balance_filter == 'unpaid' %}selected{% endif %}>Unpaid</option>
+        </select>
+    </form>
+</div>
+
+<h3 class="text-lg font-semibold mb-2">Rooms</h3>
+<table class="w-full border-collapse border mb-8 bg-white rounded-lg shadow">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border p-2">Room Number</th>
+            <th class="border p-2">Total Beds</th>
+            <th class="border p-2">Available Beds</th>
+            <th class="border p-2">Per Bed Fee</th>
+            <th class="border p-2">Bed Occupancy</th>
+            <th class="border p-2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for room_data in rooms_data %}
+        <tr>
+            <td class="border p-2">{{ room_data.room.room_number }}</td>
+            <td class="border p-2">{{ room_data.total_beds }}</td>
+            <td class="border p-2">{{ room_data.room.available_beds }}</td>
+            <td class="border p-2">{{ room_data.room.per_bed_fee }}</td>
+            <td class="border p-2">
+                <div class="w-full bg-gray-200 rounded-full h-4 relative" role="progressbar" aria-valuenow="{{ room_data.occupied_beds }}" aria-valuemin="0" aria-valuemax="{{ room_data.total_beds }}" aria-label="Room {{ room_data.room.room_number }} occupancy">
+                    <div class="bg-blue-600 h-4 rounded-full" style="width: {{ room_data.occupancy_percentage }}%"></div>
+                    <span class="absolute inset-0 flex items-center justify-center text-xs text-gray-700">
+                        {{ room_data.occupied_beds }}/{{ room_data.total_beds }}
+                    </span>
+                </div>
+            </td>
+            <td class="border p-2">
+                <a href="{% url 'update_room' room_data.room.id %}" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
+                <a href="{% url 'delete_room' room_data.room.id %}" class="bg-red-500 text-white px-2 py-1 rounded ml-2 hover:bg-red-600">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="border p-2 text-center">No rooms found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3 class="text-lg font-semibold mb-2">Customers</h3>
+<table class="w-full border-collapse border bg-white rounded-lg shadow">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border p-2">Room Number</th>
+            <th class="border p-2">Name</th>
+            <th class="border p-2">Phone Number</th>
+            <th class="border p-2">Joining Date</th>
+            <th class="border p-2">Fee Balance</th>
+            <th class="border p-2">Monthly Fee</th>
+            <th class="border p-2">Payment Status</th>
+            <th class="border p-2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in customers %}
+        <tr>
+            <td class="border p-2">{{ customer.room.room_number }}</td>
+            <td class="border p-2">{{ customer.name }}</td>
+            <td class="border p-2">{{ customer.phone_number }}</td>
+            <td class="border p-2">{{ customer.joining_date }}</td>
+            <td class="border p-2">{{ customer.fee_balance }}</td>
+            <td class="border p-2">{{ customer.monthly_fee }}</td>
+            <td class="border p-2">
+                {% for payment in customer.payments.all %}
+                    {{ payment.month }}: {{ payment.status }} ({{ payment.amount_paid }})<br>
+                {% empty %}
+                    No payments recorded
+                {% endfor %}
+            </td>
+            <td class="border p-2">
+                <a href="{% url 'update_customer' customer.id %}" class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Edit</a>
+                <a href="{% url 'update_payment' customer.id %}" class="bg-green-500 text-white px-2 py-1 rounded ml-2 hover:bg-green-600">Update Payment</a>
+                <a href="{% url 'delete_customer' customer.id %}" class="bg-red-500 text-white px-2 py-1 rounded ml-2 hover:bg-red-600">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8" class="border p-2 text-center">No customers found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
